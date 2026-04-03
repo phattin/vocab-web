@@ -1,29 +1,48 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { BookOpen, BookMarked, AlertCircle, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+// ✅ Firebase
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+
   const [stats, setStats] = useState({
     total_words: 0,
     total_units: 0,
     words_needing_review: 0,
   });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStats();
   }, []);
 
+  // ✅ Lấy dữ liệu từ Firestore
   const fetchStats = async () => {
     try {
-      const response = await axios.get(`${API}/stats`);
-      setStats(response.data);
+      const snapshot = await getDocs(collection(db, "vocabularies"));
+      const data = snapshot.docs.map((doc) => doc.data());
+
+      // 👉 Tổng số từ
+      const total_words = data.length;
+
+      // 👉 Đếm số unit (không trùng)
+      const units = new Set(data.map((item) => item.unit));
+      const total_units = units.size;
+
+      // 👉 Từ cần ôn (tạm = 0, sau nâng cấp)
+      const words_needing_review = 0;
+
+      setStats({
+        total_words,
+        total_units,
+        words_needing_review,
+      });
     } catch (error) {
       console.error("Error fetching stats:", error);
       toast.error("Không thể tải thống kê");
@@ -71,7 +90,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8" data-testid="dashboard">
-      {/* Hero Section */}
+      {/* Hero */}
       <div className="text-left">
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold tracking-tight mb-4">
           Chào mừng đến với
@@ -82,21 +101,19 @@ const Dashboard = () => {
         </p>
       </div>
 
-      {/* Stats Grid - Bento Style */}
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatCard
           icon={BookOpen}
           label="Tổng số từ vựng"
           value={stats.total_words}
           color="bg-brand-tertiary"
-          testId="stat-total-words"
         />
         <StatCard
           icon={BookMarked}
           label="Số chủ đề"
           value={stats.total_units}
           color="bg-brand-secondary"
-          testId="stat-total-units"
         />
         <StatCard
           icon={AlertCircle}
@@ -104,11 +121,10 @@ const Dashboard = () => {
           value={stats.words_needing_review}
           color="bg-accents-warning"
           onClick={() => navigate("/practice")}
-          testId="stat-words-review"
         />
       </div>
 
-      {/* Quick Actions */}
+      {/* Actions */}
       <div>
         <h2 className="text-2xl sm:text-3xl font-heading font-bold mb-6">
           Bắt đầu ngay
@@ -120,7 +136,6 @@ const Dashboard = () => {
             icon={BookOpen}
             color="bg-brand-primary"
             onClick={() => navigate("/add")}
-            testId="action-add-vocab"
           />
           <ActionCard
             title="Luyện tập ngay"
@@ -128,7 +143,6 @@ const Dashboard = () => {
             icon={TrendingUp}
             color="bg-brand-secondary"
             onClick={() => navigate("/practice")}
-            testId="action-start-practice"
           />
         </div>
       </div>
