@@ -182,3 +182,11 @@
     border-right-color: var(--border);
   }
 }
+
+.App {
+  min-height: 100vh;
+}
+
+.App-link {
+  color: #A78BFA;
+}

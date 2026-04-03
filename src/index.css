@@ -1,3 +1,69 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-borders-light;
+  }
+  
+  body {
+    @apply bg-background-primary text-text-primary font-body;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer utilities {
+  .btn-primary {
+    @apply bg-brand-primary text-text-primary font-bold border-2 border-borders-default shadow-brutal hover:-translate-y-1 hover:shadow-brutal-lg active:translate-y-1 active:translate-x-1 active:shadow-none rounded-xl px-6 py-3;
+    transition: all 150ms ease-out;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-text-primary font-bold border-2 border-borders-default shadow-brutal hover:-translate-y-1 hover:bg-gray-50 hover:shadow-brutal-lg active:translate-y-1 active:translate-x-1 active:shadow-none rounded-xl px-6 py-3;
+    transition: all 150ms ease-out;
+  }
+  
+  .card-brutal {
+    @apply bg-white border-2 border-borders-default shadow-brutal rounded-2xl overflow-hidden;
+  }
+  
+  .card-brutal-interactive {
+    @apply card-brutal hover:-translate-y-1 hover:shadow-brutal-lg cursor-pointer;
+    transition: all 200ms ease-out;
+  }
+  
+  .flashcard {
+    @apply bg-white border-4 border-borders-default shadow-brutal-xl rounded-3xl p-10 min-h-[400px] flex flex-col justify-center items-center text-center relative;
+  }
+  
+  .input-brutal {
+    @apply w-full bg-white border-2 border-borders-default rounded-xl px-4 py-3 text-base font-medium focus:outline-none focus:ring-4 focus:ring-brand-primary/30;
+    transition: box-shadow 150ms ease-out;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+  20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+.shake {
+  animation: shake 0.5s;
+}
+
+@keyframes scaleUp {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.scale-up {
+  animation: scaleUp 0.3s;
+}
